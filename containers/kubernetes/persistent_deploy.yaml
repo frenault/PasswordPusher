@@ -3,10 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: pwpush
+    app: pwpush2
     component: ingress-controller
     type: nginx
-  name: pwpush
+  name: pwpush2
   namespace: pwpush
 spec:
   progressDeadlineSeconds: 600
@@ -14,7 +14,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: pwpush
+      app: pwpush2
       component: ingress-controller
       type: nginx
   strategy:
@@ -26,14 +26,14 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: pwpush
+        app: pwpush2
         component: ingress-controller
         type: nginx
     spec:
       containers:
-      - image: docker.io/pglombardo/pwpush
+      - image: docker.io/pglombardo/pwpush:stable
         imagePullPolicy: Always
-        name: pwpush
+        name: pwpush2
         env:
           - name: DATABASE_URL
             value: postgres://passwordpusher_user:passwordpusher_passwd@localhost:5432/passwordpusher_db

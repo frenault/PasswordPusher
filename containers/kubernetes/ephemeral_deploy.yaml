@@ -31,7 +31,7 @@ spec:
         type: nginx
     spec:
       containers:
-      - image: docker.io/pglombardo/pwpush
+      - image: docker.io/pglombardo/pwpush:stable
         imagePullPolicy: Always
         name: pwpush
         resources: {}
