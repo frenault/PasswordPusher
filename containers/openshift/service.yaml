@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pwpush2
+  namespace: pwpush
+spec:
+  selector:
+    app: pwpush2
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5100
+  type: ClusterIP

@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pwpush2
+    component: ingress-controller
+    type: nginx
+  name: pwpush2
+  namespace: pwpush
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: pwpush2
+      component: ingress-controller
+      type: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: pwpush2
+        component: ingress-controller
+        type: nginx
+    spec:
+      serviceAccountName: pwpush-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      containers:
+      - name: pwpush2
+        image: docker.io/pglombardo/pwpush:stable
+        imagePullPolicy: Always
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: pwpush-secret
+                key: DATABASE_URL
+        ports:
+          - containerPort: 5100
+            protocol: TCP
+        volumeMounts:
+          - name: pwpush-database-data
+            mountPath: /var/lib/postgresql/data
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5100
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5100
+          initialDelaySeconds: 5
+          periodSeconds: 3
+      - name: postgres
+        image: docker.io/postgres:15
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: pwpush-secret
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pwpush-secret
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: pwpush-secret
+                key: POSTGRES_DB
+        volumeMounts:
+          - name: pwpush-database-data
+            mountPath: /var/lib/postgresql/data
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+      volumes:
+      - name: pwpush-database-data
+        persistentVolumeClaim:
+          claimName: pwpush-data-pvc
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

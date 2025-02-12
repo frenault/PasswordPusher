@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: pwpush2
+  namespace: pwpush
+spec:
+  to:
+    kind: Service
+    name: pwpush2
+  port:
+    targetPort: 80
+  tls:
+    termination: edge

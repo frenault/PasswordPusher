@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pwpush-db
+  namespace: pwpush
+  labels:
+    app: pwpush-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pwpush-db
+  template:
+    metadata:
+      labels:
+        app: pwpush-db
+    spec:
+      serviceAccountName: pwpush-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      containers:
+      - name: postgres
+        image: docker.io/postgres:15
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_USER
+            value: passwordpusher_user
+          - name: POSTGRES_PASSWORD
+            value: passwordpusher_passwd
+          - name: POSTGRES_DB
+            value: passwordpusher_db
+        ports:
+          - containerPort: 5432
+            protocol: TCP
+        volumeMounts:
+          - name: pwpush-db-data
+            mountPath: /var/lib/postgresql/data
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+      volumes:
+      - name: pwpush-db-data
+        persistentVolumeClaim:
+          claimName: pwpush-db-pvc
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
