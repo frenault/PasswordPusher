@@ -2,19 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: pwpush2
-    component: ingress-controller
-    type: nginx
-  name: pwpush2
+    app: pwpush
+    name: pwpush
   namespace: pwpush
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: pwpush2
-      component: ingress-controller
-      type: nginx
+      app: pwpush
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -23,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: pwpush2
+        app: pwpush
         component: ingress-controller
         type: nginx
     spec:
@@ -32,7 +28,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 1001
       containers:
-      - name: pwpush2
+      - name: pwpush
         image: docker.io/pglombardo/pwpush:stable
         imagePullPolicy: Always
         env:

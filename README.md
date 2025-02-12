@@ -17,7 +17,7 @@ __Simple & Secure Password Sharing with Auto-Expiration of Shared Items__
 </div>
 
 ------
-
+[Openshift Documentation](./containers/openshift/)
 Give your users the tools to be secure by default.
 
 Password Pusher is an open source application to communicate sensitive information over the web. Secret links expire after a certain number of views and/or time has passed.

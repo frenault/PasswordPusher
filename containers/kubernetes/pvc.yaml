@@ -10,7 +10,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: nfs-csi
+  storageClassName: local-path
   volumeMode: Filesystem
   volumeName: pwpush-data-pvc
 ...

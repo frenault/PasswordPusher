@@ -1,26 +1,32 @@
-apiVersion: apps/v1
+piVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pwpush2
-  namespace: pwpush
   labels:
-    app: pwpush2
-spec:
+    app: pwpush
+    name: pwpush
+    namespace: pwpush
+  spec:
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: pwpush2
+      app: pwpush
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
-        app: pwpush2
+        app: pwpush
     spec:
       serviceAccountName: pwpush-sa
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
       containers:
-      - name: pwpush2
+      - name: pwpush
         image: docker.io/pglombardo/pwpush:stable
         imagePullPolicy: Always
         env:

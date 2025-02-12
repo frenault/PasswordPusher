@@ -9,4 +9,4 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: gp2  # Change this to match your OpenShift storage class
+  storageClassName: nfs-csi  # Change this to match your OpenShift storage class
